@@ -277,16 +277,16 @@
 <body>
 <div class="container" id="container">
     <div class="form-container sign-up-container">
-        <form method="post">
+        <form onsubmit="return checkValidateForm()" th:action="@{/dang-ky}" th:object="${User}" method="post">
             <h1 class="form-title">Tạo tài khoản</h1>
-            <input type="text" name="username" placeholder="Tên người dùng"/>
+            <input type="text" name="username" onblur="checkUsername()" placeholder="Tên người dùng"/>
             <div id="userError" style="display: none"></div>
-            <input type="text" id="email" name="email"
+            <input type="text" id="email" name="email" onblur="checkEmail()" onkeyup="checkEmail()"
                    placeholder="Email"/>
             <div id="emailError" style="display: none"></div>
-            <input type="password" name="password" placeholder="Mật khẩu ít nhất có 8 kí tự"/>
+            <input type="password" name="password" onblur="checkPass()" placeholder="Mật khẩu ít nhất có 8 kí tự"/>
             <div id="passError" style="display: none"></div>
-            <input type="password" name="rePassword" placeholder="Nhập lại mật khẩu"/>
+            <input type="password" name="rePassword" onblur="checkRePassword()" placeholder="Nhập lại mật khẩu"/>
             <div id="rePassError" style="display: none"></div>
             <button type="submit">Đăng ký</button>
         </form>
@@ -321,7 +321,13 @@
     </div>
 </div>
 <th:block th:insert="~{web/fragment::body/script}"></th:block>
+
 <script>
+    //su dung cho su kien onsubmit, sk nay se ktr neu ham checkValidateForm tra ve true thi se thuc hien action
+    function checkValidateForm() {
+        return checkEmail() && checkUsername() && checkPass() && checkRePassword();
+    }
+
     $(function () {
         //sign in
         $("#signUp").click(function () {
