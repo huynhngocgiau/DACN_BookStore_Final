@@ -1,7 +1,8 @@
 package vn.edu.hcmuaf.st.DACN_BookStore_2023.entity;
 
 import jakarta.persistence.*;
-
+@Entity
+@Table(name = "bookimage")
 public class BookImageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,7 +12,6 @@ public class BookImageEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bookID")
     private BookEntity book;
-
 
     public int getImageID() {
         return imageID;

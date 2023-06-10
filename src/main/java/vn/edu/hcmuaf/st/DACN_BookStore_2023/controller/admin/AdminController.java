@@ -133,7 +133,6 @@ public class AdminController {
         ModelAndView mav = new ModelAndView("redirect:/admin-page/book-management");
         return mav;
     }
-}
 
 
     @Autowired

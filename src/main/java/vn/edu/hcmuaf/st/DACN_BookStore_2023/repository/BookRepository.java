@@ -8,7 +8,7 @@ import vn.edu.hcmuaf.st.DACN_BookStore_2023.entity.BookEntity;
 import java.util.List;
 
 public interface BookRepository extends JpaRepository<BookEntity, Integer> {
-    //tìm tất cả saách theo danh mục, phân trang
+    //tìm tất cả sách theo danh mục, phân trang
     public Page<BookEntity> findByCategoryCode(String code, Pageable pageable);
 
     public Page<BookEntity> findAllByAuthorAuthorCode(String code, Pageable pageable);
@@ -35,4 +35,4 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 
     public BookEntity findFirstByOrderByIdDesc();
 
-
+}
