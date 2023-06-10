@@ -67,10 +67,10 @@
             </a>
         </div>
         <div class="col-lg-6 col-6 text-left">
-            <form method="get">
+            <form th:action="@{/san-pham}" method="get">
                 <div class="input-group">
                     <input type="text" id="search-auto-complete" name="title" class="form-control"
-                           placeholder="Tìm kiếm sách">
+                           placeholder="Tìm kiếm sách" onkeyup="autoCompleteTitle()">
                     <div class="input-group-append">
                         <button type="submit" class="btn">
                             <span class="input-group-text bg-transparent text-primary">
@@ -212,6 +212,20 @@
 <!-- Template Javascript -->
 <script src="js/main.js" th:src="@{/web/js/main.js}"></script>
 <script>
+    function autoCompleteTitle() {
+        var searchValue = $("#search-auto-complete").val();
+        $.ajax({
+            url: "autocomplete?title=" + searchValue,
+            cache: false,
+            dataType: "json",
+            success: function (titles) {
+                $("#search-auto-complete").autocomplete({
+                    source: titles
+                });
+            }
+        })
+    }
+
     $(function () {
         //ajax category
         $.ajax({
