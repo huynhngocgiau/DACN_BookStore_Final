@@ -31,4 +31,8 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 
     public int countAllByTitleContains(String title);
 
-}
+    public BookEntity findById(int id);
+
+    public BookEntity findFirstByOrderByIdDesc();
+
+

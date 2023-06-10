@@ -27,5 +27,9 @@ public interface IBookService {
 
     public List<String> autoCompleteTitle(String title);
 
+    public void save(BookDTO book);
 
+    public BookDTO findById(int id);
+
+    public void deleteById(int id);
 }
