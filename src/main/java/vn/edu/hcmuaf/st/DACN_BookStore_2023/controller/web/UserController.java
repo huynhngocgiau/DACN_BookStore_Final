@@ -49,6 +49,7 @@ public class UserController {
             mav = new ModelAndView("web/confirmCode.html");
             mav.addObject("userId", id);
             mav.addObject("message", "Mã không trùng khớp. Vui lòng kiểm tra mail và thử lại");
+
         }
         return mav;
     }
