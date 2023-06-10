@@ -9,10 +9,10 @@
 <div class="container-fluid">
     <h3>Vui lòng nhập code để xác nhận tài khoản</h3>
     <div class="col-5">
-        <form method="post">
+        <form th:action="@{/confirm-account}" method="post">
             <input type="text" name="confirmCode" placeholder="Code xác nhận tài khoản" class="form-control mb-3">
-            <input type="hidden" name="userId" class="mb-3">
-            <p></p>
+            <input type="hidden" name="userId" th:value="${userId}" class="mb-3">
+            <p style="color: red; font-size: smaller" th:utext="${message} ? ${message}"></p>
             <button type="submit" class="btn btn-success">Xác nhận</button>
         </form>
     </div>

@@ -36,4 +36,3 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
     public BookEntity findFirstByOrderByIdDesc();
 
 
-}
