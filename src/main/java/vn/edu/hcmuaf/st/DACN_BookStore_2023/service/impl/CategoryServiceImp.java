@@ -37,6 +37,22 @@ public class CategoryServiceImp implements ICategoryService {
     }
 
     @Override
+    public void save(CategoryDTO categoryDTO) {
+        catRepo.save(catConverter.toEntity(categoryDTO));
+
+}
+
+    @Override
+    public void deleteByCatId(int id) {
+        catRepo.deleteByCategoryID(id);
+    }
+
+    @Override
+    public void updateCat(CategoryDTO cat) {
+        catRepo.updateCategory(cat.getName(), cat.getCode(), cat.getCreatedAt(), cat.getUpdatedAt(), cat.getCategoryID());
+    }
+
+    @Override
     public List<CategoryDTO> findTenCat() {
         List<CategoryEntity> catEntities = catRepo.findFirst10ByOrderByCategoryIDAsc();
         List<CategoryDTO> results = new ArrayList<>();

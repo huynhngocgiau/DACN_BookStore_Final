@@ -15,5 +15,18 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Integer> {
     public CategoryEntity findByCategoryID(int id);
 
+    @Transactional
+    @Modifying
+    public void deleteByCategoryID(int id);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update category set name=:name, code=:code, created_at=:createdAt, updated_at=:updatedAt where categoryID=:id", nativeQuery = true)
+    public void updateCategory(@Param("name") String name,
+                               @Param("code") String code,
+                               @Param("createdAt") LocalDate createdAt,
+                               @Param("updatedAt") LocalDate updatedAt,
+                               @Param("id") int id);
+
     public List<CategoryEntity> findFirst10ByOrderByCategoryIDAsc();
 }
