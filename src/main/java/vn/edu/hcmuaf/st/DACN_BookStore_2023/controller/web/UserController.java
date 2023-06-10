@@ -44,7 +44,12 @@ public class UserController {
         //nếu giống nhau thì set enable lại r trả về view sign in
         if (code.equalsIgnoreCase(userService.getConfirmCode(id))) {
             UserDTO userDTO = userService.confirmEmail(id);
-            mav = new ModelAndView("web/signin.html");
+            mav = new ModelAndView("redirect:/dang-nhap");
+        }else {
+            mav = new ModelAndView("web/confirmCode.html");
+            mav.addObject("userId", id);
+            mav.addObject("message", "Mã không trùng khớp. Vui lòng kiểm tra mail và thử lại");
+
         }
         return mav;
     }

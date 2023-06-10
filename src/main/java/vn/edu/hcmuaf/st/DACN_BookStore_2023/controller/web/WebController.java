@@ -46,8 +46,4 @@ public class WebController {
         if (error) mav.addObject("message", "Email hoặc mật khẩu không đúng");
         return mav;
     }
-    @GetMapping("/san-pham")
-    public ModelAndView shop(){
-        return new ModelAndView("web/shop.html");
-    }
 }
