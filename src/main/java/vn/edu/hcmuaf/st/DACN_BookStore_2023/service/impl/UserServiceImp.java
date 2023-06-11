@@ -99,6 +99,21 @@ public class UserServiceImp implements IUserService {
         userRepo.save(userEntity);
         return userConverter.toDTO(userEntity);
     }
-
-
+    @Override
+    public void changeInformation(UserDTO user) {
+        String username = "";
+        String fullname = "";
+        String phone = "";
+        LocalDate birthdate = LocalDate.now();
+        //gender: true là nữ, false là nam
+        boolean gender = false;
+        UserEntity userFromDb = userRepo.findByEmailIgnoreCaseAndIsEnableAndStatus(user.getEmail(), true, true);
+        if (user.getUsername() != null) username = user.getUsername();
+        if (user.getFullname() != null) fullname = user.getFullname();
+        if (user.getBirthdate() != null)
+            birthdate = user.getBirthdate();
+        if (user.isGender()) gender = user.isGender();
+        if (user.getPhone() != null) phone = user.getPhone();
+        userRepo.updateUser(userFromDb.getUserID(), username, fullname, birthdate, gender, phone, LocalDate.now());
+    }
 }
