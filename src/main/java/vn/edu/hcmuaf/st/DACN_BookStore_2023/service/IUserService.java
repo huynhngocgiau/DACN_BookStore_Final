@@ -13,4 +13,6 @@ public interface IUserService {
 
     public UserDTO confirmEmail(int id);
 
+    //change information
+    public void changeInformation(UserDTO user);
 }
