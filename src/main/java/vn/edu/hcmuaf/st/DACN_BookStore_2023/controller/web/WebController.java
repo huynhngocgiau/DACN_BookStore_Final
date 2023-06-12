@@ -41,9 +41,9 @@ public class WebController {
     }
 
     @GetMapping("/dang-nhap")
-    public ModelAndView signin(@RequestParam(name = "error", required = false) boolean error) {
+    public ModelAndView signin (@RequestParam(name = "error", required = false) boolean error){
         ModelAndView mav = new ModelAndView("web/signin");
         if (error) mav.addObject("message", "Email hoặc mật khẩu không đúng");
-        return mav;
+        return  mav;
     }
 }
