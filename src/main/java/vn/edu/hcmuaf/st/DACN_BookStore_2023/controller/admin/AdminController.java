@@ -5,10 +5,9 @@ import vn.edu.hcmuaf.st.DACN_BookStore_2023.api.input.BookInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.BookDTO;
-import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.BookImageDTO;
-import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.UserDTO;
+import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.*;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.oauth2.CustomOAuth2User;
+import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.IAuthorService;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.IBookService;
 
 import java.io.IOException;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.CategoryDTO;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.ICategoryService;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.IUserService;
 
@@ -32,6 +30,8 @@ public class AdminController {
     private IBookService bookService;
     @Autowired
     private IUserService userService;
+    @Autowired
+    private IAuthorService authorService;
 
     //books
     @GetMapping("/book-management")
@@ -199,6 +199,46 @@ public class AdminController {
             } else userEmail = authentication.getName();
             return userService.findByEmailAndIsEnable(userEmail);
         }
+    }
+    //admin author
+    @GetMapping("/author-management")
+    public ModelAndView listAuthor() {
+        ModelAndView mav = new ModelAndView("admin/author-management/authors");
+        mav.addObject("authors", authorService.findAll());
+        return mav;
+    }
+
+    @GetMapping("/add-author-page")
+    public ModelAndView addAuthorPage() {
+        return new ModelAndView("admin/author-management/addAuthor");
+    }
+
+    @PostMapping("/add-author")
+    public ModelAndView addAuthor(@ModelAttribute("author") AuthorDTO author) {
+        authorService.save(author);
+        ModelAndView mav = new ModelAndView("redirect:/admin-page/author-management");
+        return mav;
+    }
+
+    @GetMapping("/edit-author-page")
+    public ModelAndView editAuthorPage(@RequestParam("id") int id) {
+        ModelAndView mav = new ModelAndView("admin/author-management/editAuthor");
+        mav.addObject("au", authorService.findById(id));
+        return mav;
+    }
+
+    @PostMapping("/edit-author")
+    public ModelAndView editAuthor(@ModelAttribute("author") AuthorDTO author) {
+        authorService.update(author, author.getAuthorID());
+        ModelAndView mav = new ModelAndView("redirect:/admin-page/author-management");
+        return mav;
+    }
+
+    @GetMapping("/delete-author")
+    public ModelAndView deleteAuthor(@RequestParam("id") int id) {
+        authorService.delete(id);
+        ModelAndView mav = new ModelAndView("redirect:/admin-page/author-management");
+        return mav;
     }
 }
 
