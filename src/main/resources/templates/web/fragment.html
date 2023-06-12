@@ -227,6 +227,34 @@
     }
 
     $(function () {
+        //ajax user login
+        $.ajax({
+            url: "getUser", cache: false, dataType: "json", success: function (user) {
+                var str = "";
+                str += "<a href='/gio-hang' class='nav-item nav-link' title='Giỏ hàng'><i class = 'fas fa-shopping-cart text-primary'></i></a>";
+                if (user.email != null) {
+                    str += "<div class='dropdown'>";
+                    str += "<button style='border: none' class='btn dropdown-toggle nav-item nav-link' type='button' id='infor' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>";
+                    str += "Xin chào, " + user.username;
+                    str += "</button>";
+                    str += "<div class='dropdown-menu' aria-labelledby='infor'>";
+                    str += "<a class='dropdown-item' href='/thong-tin-tai-khoan'>Tài khoản</a>";
+                    str += "<a class='dropdown-item' href='/don-hang'>Đơn hàng</a>";
+                    for (let i of user.roles) {
+                        if (i.name == "ROLE_ADMIN") {
+                            str += "<a class='dropdown-item' href='/admin-page/book-management'>Trang Admin</a>";
+                        }
+                    }
+                    str += "<div class='dropdown-divider'></div>";
+                    str += "<a class='dropdown-item' href='/logout'>Thoát</a>";
+                    str += "</div>";
+                    str += "</div>";
+                } else {
+                    str += "<a href='/dang-nhap' class='nav-item nav-link'>Đăng nhập</a>";
+                }
+                $("#user-area").html(str);
+            }
+        });
         //ajax category
         $.ajax({
             url: "/getCategory", type: "GET", cache: false, success: function (results) {
