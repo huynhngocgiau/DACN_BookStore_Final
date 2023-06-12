@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Random;
 
 @Service
-public class UserServiceImp implements IUserService {
+//public class UserServiceImp implements IUserService {
+    public class UserServiceImp implements IUserService{
+
     @Autowired
     private UserConverter userConverter;
     @Autowired
@@ -115,5 +117,30 @@ public class UserServiceImp implements IUserService {
         if (user.isGender()) gender = user.isGender();
         if (user.getPhone() != null) phone = user.getPhone();
         userRepo.updateUser(userFromDb.getUserID(), username, fullname, birthdate, gender, phone, LocalDate.now());
+    }
+
+    @Override
+    public void processOAuthPostLogin(Object email) {
+
+    }
+
+    @Override
+    public void processOAuthPostLogin(String email) {
+        //nếu như tài khoản đã đăng ký và xác thực rồi thì không cần tạo lại
+        UserEntity user = userRepo.findByEmailIgnoreCaseAndIsEnableAndStatus(email, true, true);
+        //nếu như chưa có tài khoản thì tạo tk mới thêm vào db
+        if (user == null) {
+            UserEntity oauthUser = new UserEntity();
+            oauthUser.setEmail(email);
+            oauthUser.setUsername(email);
+            oauthUser.setEnable(true);
+            oauthUser.setCreatedAt(LocalDate.now());
+            oauthUser.setStatus(true);
+            oauthUser.setProvider("GOOGLE");
+            List<RoleEntity> roles = new ArrayList<>();
+            roles.add(roleRepo.findByName("ROLE_USER"));
+            oauthUser.setRoles(roles);
+            userRepo.save(oauthUser);
+        }
     }
 }
