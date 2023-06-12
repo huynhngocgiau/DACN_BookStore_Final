@@ -1,12 +1,16 @@
 package vn.edu.hcmuaf.st.DACN_BookStore_2023.controller.admin;
 
+import org.springframework.security.core.Authentication;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.api.input.BookInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.BookDTO;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.BookImageDTO;
+import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.UserDTO;
+import vn.edu.hcmuaf.st.DACN_BookStore_2023.oauth2.CustomOAuth2User;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.IBookService;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -15,8 +19,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.CategoryDTO;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.ICategoryService;
+import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.IUserService;
 
 @RestController
 @RequestMapping("/admin-page")
@@ -24,6 +30,8 @@ public class AdminController {
     private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
     @Autowired
     private IBookService bookService;
+    @Autowired
+    private IUserService userService;
 
     //books
     @GetMapping("/book-management")
@@ -180,5 +188,17 @@ public class AdminController {
         return mav;
     }
 
+    @GetMapping("getAdmin")
+    public UserDTO getAdmin(Authentication authentication) {
+        if (authentication == null) return new UserDTO();
+        else {
+            String userEmail = "";
+            if (authentication.getPrincipal() instanceof CustomOAuth2User) {
+                CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+                userEmail = oAuth2User.getAttribute("email");
+            } else userEmail = authentication.getName();
+            return userService.findByEmailAndIsEnable(userEmail);
+        }
+    }
 }
 

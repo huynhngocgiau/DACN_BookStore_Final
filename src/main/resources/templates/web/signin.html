@@ -292,7 +292,7 @@
         </form>
     </div>
     <div class="form-container sign-in-container">
-        <form method="post">
+        <form th:action="@{/login}" method="post">
             <h1 class="form-title">Đăng nhập</h1>
             <span class="text-danger"></span>
             <input type="email" name="email" placeholder="Email" required/>
@@ -302,7 +302,7 @@
             <a href="/" class="mb-2">Trang chủ</a>
             <button type="submit">Đăng nhập</button>
             <p class="hr-lines">Hoặc</p>
-            <a class="mt-2">Đăng nhập bằng Google</a>
+            <a th:href="@{/oauth2/authorization/google}" class="mt-2">Đăng nhập bằng Google</a>
         </form>
     </div>
     <div class="overlay-container">
