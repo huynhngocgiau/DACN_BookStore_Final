@@ -53,6 +53,30 @@ public class UserController {
         }
         return mav;
     }
+    @GetMapping("/getUser")
+    public UserDTO getUser(Principal principal) {
+        if (principal != null) {
+            UserDTO user = this.userService.findByEmailAndIsEnable(principal.getName());
+            user.setPassword("");
+            return user;
+        } else {
+            return new UserDTO();
+        }
+    }
 
+    @GetMapping("/thong-tin-tai-khoan")
+    public ModelAndView information() {
+        ModelAndView mav = new ModelAndView("web/information.html");
+        return mav;
+    }
+
+    @PostMapping("/cap-nhat-thong-tin")
+    public ModelAndView changeInformation(@ModelAttribute(name = "user") UserDTO user, Principal principal) {
+        ModelAndView mav = new ModelAndView("web/information.html");
+        userService.changeInformation(user);
+        mav.addObject("message", "Cập nhật thông tin thành công");
+        if (principal != null) return mav;
+        return new ModelAndView("web/signin.html");
+    }
 
 }

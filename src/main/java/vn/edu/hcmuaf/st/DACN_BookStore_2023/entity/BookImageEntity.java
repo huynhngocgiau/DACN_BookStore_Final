@@ -1,15 +1,8 @@
 package vn.edu.hcmuaf.st.DACN_BookStore_2023.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 @Entity
 @Table(name = "bookimage")
-@Getter
-@Setter
-@NoArgsConstructor
 public class BookImageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,4 +13,28 @@ public class BookImageEntity {
     @JoinColumn(name = "bookID")
     private BookEntity book;
 
+    public int getImageID() {
+        return imageID;
+    }
+
+    public void setImageID(int imageID) {
+        this.imageID = imageID;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public BookEntity getBook() {
+        return book;
+    }
+
+    public void setBook(BookEntity book) {
+        this.book = book;
+    }
 }
+

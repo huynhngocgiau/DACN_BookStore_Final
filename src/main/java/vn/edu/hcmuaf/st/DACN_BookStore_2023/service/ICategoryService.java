@@ -8,5 +8,11 @@ public interface ICategoryService {
 
     public CategoryDTO findById(int id);
 
+    public void save(CategoryDTO categoryDTO);
+
+    public void deleteByCatId(int id);
+
+    public void updateCat(CategoryDTO cat);
+
     public List<CategoryDTO> findTenCat();
 }

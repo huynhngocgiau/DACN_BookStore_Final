@@ -5,7 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.converter.BookConverter;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.BookDTO;
+import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.BookImageDTO;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.entity.BookEntity;
+import vn.edu.hcmuaf.st.DACN_BookStore_2023.entity.BookImageEntity;
+import vn.edu.hcmuaf.st.DACN_BookStore_2023.repository.BookImageRepository;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.repository.BookRepository;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.IBookService;
 
@@ -18,6 +21,8 @@ public class BookServiceImp implements IBookService {
     private BookRepository bookRepo;
     @Autowired
     private BookConverter bookConverter;
+    @Autowired
+    private BookImageRepository bookImageRepository;
 
 
     @Override
@@ -97,4 +102,34 @@ public class BookServiceImp implements IBookService {
         }
         return result;
     }
+
+    @Override
+    public void save(BookDTO book) {
+        BookEntity bookEntity = new BookEntity();
+        if (book.getId() != 0) {
+            bookEntity = bookConverter.fromDtoToEntity(book, bookRepo.findById(book.getId()));
+//            bookEntity.setCategory(categoryRepository.findByCategoryID(book.getCategory().getCategoryID()));
+//            bookEntity.setAuthor(authorRepository.findByAuthorID(book.getAuthor().getAuthorID()));
+        } else
+            bookEntity = bookConverter.toEntity(book);
+        bookEntity = bookRepo.save(bookEntity);
+        for (BookImageDTO i : book.getImages()) {
+            BookImageEntity image = new BookImageEntity();
+            image.setPath(i.getPath());
+            if (book.getId() != 0) image.setBook(bookRepo.findById(book.getId()));
+            else image.setBook(bookRepo.findFirstByOrderByIdDesc());
+            bookImageRepository.save(image);
+        }
+    }
+
+    @Override
+    public BookDTO findById(int id) {
+        return bookConverter.toDTO(bookRepo.findById(id));
+    }
+
+    @Override
+    public void deleteById(int id) {
+        bookRepo.deleteById(id);
+    }
+
 }
