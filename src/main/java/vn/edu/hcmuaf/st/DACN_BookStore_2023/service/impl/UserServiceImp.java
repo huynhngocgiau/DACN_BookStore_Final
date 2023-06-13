@@ -102,6 +102,29 @@ public class UserServiceImp implements IUserService {
     }
 
     @Override
+    public UserDTO sendMailForgotPassword(String userEmail) {
+        //nếu lấy email của user, tra csdl có tồn tại tài khoản thì tạo một mật khẩu random 8 k tự gửi cho mail đó
+        UserEntity result = userRepo.findByEmailIgnoreCaseAndIsEnableAndStatus(userEmail, true, true);
+        if (result != null) {
+            //tao random pass
+            String rdPass = new Random().nextInt(99999999) + "";
+            while (rdPass.charAt(0) == 0 || rdPass.charAt(rdPass.length() - 1) == 0)
+                rdPass = new Random().nextInt(99999999) + "";
+            //send mail
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(userEmail);
+            message.setSubject("Bookstore - Xác nhận email quên mật khẩu");
+            message.setFrom("bookstore@gmail.com");
+            message.setText("Chúng tôi đã tạo mật khẩu mới cho tài khoản của bạn, mật khẩu là: " + rdPass + ". Để bảo mật tài khoản vui lòng đăng nhập và thay đổi mật khẩu");
+            mailSender.send(message);
+            //cập nhật lại mật khẩu random trong db
+            changePassword(rdPass, userEmail);
+            return userConverter.toDTO(result);
+        }
+        return null;
+    }
+
+    @Override
     public void changeInformation(UserDTO user) {
         String username = "";
         String fullname = "";

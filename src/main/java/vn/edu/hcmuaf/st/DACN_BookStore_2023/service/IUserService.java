@@ -12,7 +12,7 @@ public interface IUserService {
     public String getConfirmCode(int id);
 
     public UserDTO confirmEmail(int id);
-
+    public UserDTO sendMailForgotPassword(String userEmail);
     //change information
     public void changeInformation(UserDTO user);
 
