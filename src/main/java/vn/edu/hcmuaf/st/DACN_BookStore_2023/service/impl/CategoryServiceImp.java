@@ -1,6 +1,8 @@
 package vn.edu.hcmuaf.st.DACN_BookStore_2023.service.impl;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.converter.CategoryConverter;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.CategoryDTO;
@@ -39,8 +41,7 @@ public class CategoryServiceImp implements ICategoryService {
     @Override
     public void save(CategoryDTO categoryDTO) {
         catRepo.save(catConverter.toEntity(categoryDTO));
-
-}
+    }
 
     @Override
     public void deleteByCatId(int id) {
