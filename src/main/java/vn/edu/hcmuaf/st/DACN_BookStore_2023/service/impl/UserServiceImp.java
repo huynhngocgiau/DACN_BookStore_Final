@@ -23,13 +23,13 @@ import java.util.Random;
 
 @Service
 //public class UserServiceImp implements IUserService {
-    public class UserServiceImp implements IUserService{
+public class UserServiceImp implements IUserService {
 
     @Autowired
     private UserConverter userConverter;
     @Autowired
     private UsersRepository userRepo;
-//    @Autowired
+    //    @Autowired
 //    private BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
     @Autowired
     private RoleRepository roleRepo;
@@ -101,6 +101,7 @@ import java.util.Random;
         userRepo.save(userEntity);
         return userConverter.toDTO(userEntity);
     }
+
     @Override
     public void changeInformation(UserDTO user) {
         String username = "";
@@ -142,5 +143,30 @@ import java.util.Random;
             oauthUser.setRoles(roles);
             userRepo.save(oauthUser);
         }
+    }
+
+    @Override
+    public List<UserDTO> findAllUser() {
+        List<UserDTO> result = new ArrayList<>();
+        for (UserEntity u : userRepo.findAll()) {
+            result.add(userConverter.toDTO(u));
+        }
+        return result;
+    }
+
+    @Override
+    public UserDTO findByUserId(int id) {
+        return userConverter.toDTO(userRepo.findByUserID(id));
+    }
+
+    @Override
+    public void deleteByUserId(int id) {
+        userRepo.deleteByUserID(id);
+    }
+
+
+    @Override
+    public void save(UserDTO user) {
+        userRepo.save(userConverter.toEntity(user));
     }
 }
