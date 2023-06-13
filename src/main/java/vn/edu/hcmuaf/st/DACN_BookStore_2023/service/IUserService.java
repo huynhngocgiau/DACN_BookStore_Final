@@ -17,4 +17,9 @@ public interface IUserService {
     void processOAuthPostLogin(Object email);
 
     void processOAuthPostLogin(String email);
+    //change password
+    public void changePassword(String password, String email);
+    //change password
+    public boolean checkPass(String email, String password);
+
 }

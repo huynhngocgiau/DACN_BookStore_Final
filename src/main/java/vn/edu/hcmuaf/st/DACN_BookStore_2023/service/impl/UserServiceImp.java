@@ -29,8 +29,8 @@ import java.util.Random;
     private UserConverter userConverter;
     @Autowired
     private UsersRepository userRepo;
-//    @Autowired
-//    private BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private RoleRepository roleRepo;
     @Autowired
@@ -142,5 +142,19 @@ import java.util.Random;
             oauthUser.setRoles(roles);
             userRepo.save(oauthUser);
         }
+    }
+
+    @Override
+    public void changePassword(String password, String email) {
+        UserEntity userFromDb = userRepo.findByEmailIgnoreCaseAndIsEnableAndStatus(email, true, true);
+        if (userFromDb != null) {
+            userRepo.updatePass(passwordEncoder.encode(password), userFromDb.getUserID());
+        }
+    }
+    @Override
+    public boolean checkPass(String email, String password) {
+        String userPass = userRepo.findByEmailIgnoreCaseAndIsEnableAndStatus(email, true, true).getPassword();
+        //dùng passwordEndcoder để kiểm tra xem mk nhập vào có giống vs mk đã mã hóa của người dùng
+        return passwordEncoder.matches(password, userPass);
     }
 }
