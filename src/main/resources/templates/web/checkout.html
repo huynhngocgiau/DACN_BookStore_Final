@@ -131,6 +131,14 @@
 <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
 <!--script file-->
 <th:block th:insert="~{web/fragment::body/script}"></th:block>
+<script>
+    function checkAddress() {
+        var addressValue = $("#address").val();
+        if (addressValue.length == 0) {
+            $("#addressError").html("Vui lòng nhập địa chỉ");
+        } else $("#addressError").html("");
+    }
+</script>
 </body>
 
 </html>
