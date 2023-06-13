@@ -22,15 +22,14 @@ import java.util.List;
 import java.util.Random;
 
 @Service
-//public class UserServiceImp implements IUserService {
 public class UserServiceImp implements IUserService {
 
     @Autowired
     private UserConverter userConverter;
     @Autowired
     private UsersRepository userRepo;
-    //    @Autowired
-//    private BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private RoleRepository roleRepo;
     @Autowired
@@ -59,7 +58,7 @@ public class UserServiceImp implements IUserService {
             if (temp != null) userRepo.delete(temp);
 
             //set lai pass da ma hoa
-            user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             //tao confirm token
             user.setConfirmToken(new Random().nextInt(999999) + "");
             user.setCreatedAt(LocalDate.now());
@@ -120,28 +119,18 @@ public class UserServiceImp implements IUserService {
         userRepo.updateUser(userFromDb.getUserID(), username, fullname, birthdate, gender, phone, LocalDate.now());
     }
 
-    @Override
-    public void processOAuthPostLogin(Object email) {
-
+   @Override
+    public boolean checkPass(String email, String password) {
+        String userPass = userRepo.findByEmailIgnoreCaseAndIsEnableAndStatus(email, true, true).getPassword();
+        //dùng passwordEndcoder để kiểm tra xem mk nhập vào có giống vs mk đã mã hóa của người dùng
+        return passwordEncoder.matches(password, userPass);
     }
 
     @Override
-    public void processOAuthPostLogin(String email) {
-        //nếu như tài khoản đã đăng ký và xác thực rồi thì không cần tạo lại
-        UserEntity user = userRepo.findByEmailIgnoreCaseAndIsEnableAndStatus(email, true, true);
-        //nếu như chưa có tài khoản thì tạo tk mới thêm vào db
-        if (user == null) {
-            UserEntity oauthUser = new UserEntity();
-            oauthUser.setEmail(email);
-            oauthUser.setUsername(email);
-            oauthUser.setEnable(true);
-            oauthUser.setCreatedAt(LocalDate.now());
-            oauthUser.setStatus(true);
-            oauthUser.setProvider("GOOGLE");
-            List<RoleEntity> roles = new ArrayList<>();
-            roles.add(roleRepo.findByName("ROLE_USER"));
-            oauthUser.setRoles(roles);
-            userRepo.save(oauthUser);
+    public void changePassword(String password, String email) {
+        UserEntity userFromDb = userRepo.findByEmailIgnoreCaseAndIsEnableAndStatus(email, true, true);
+        if (userFromDb != null) {
+            userRepo.updatePass(passwordEncoder.encode(password), userFromDb.getUserID());
         }
     }
 
@@ -164,9 +153,30 @@ public class UserServiceImp implements IUserService {
         userRepo.deleteByUserID(id);
     }
 
-
     @Override
     public void save(UserDTO user) {
         userRepo.save(userConverter.toEntity(user));
     }
+
+    @Override
+    public void processOAuthPostLogin(String email) {
+        //nếu như tài khoản đã đăng ký và xác thực rồi thì không cần tạo lại
+        UserEntity user = userRepo.findByEmailIgnoreCaseAndIsEnableAndStatus(email, true, true);
+        //nếu như chưa có tài khoản thì tạo tk mới thêm vào db
+        if (user == null) {
+            UserEntity oauthUser = new UserEntity();
+            oauthUser.setEmail(email);
+            oauthUser.setUsername(email);
+            oauthUser.setEnable(true);
+            oauthUser.setCreatedAt(LocalDate.now());
+            oauthUser.setStatus(true);
+            oauthUser.setProvider("GOOGLE");
+            List<RoleEntity> roles = new ArrayList<>();
+            roles.add(roleRepo.findByName("ROLE_USER"));
+            oauthUser.setRoles(roles);
+            userRepo.save(oauthUser);
+        }
+    }
 }
+
+   

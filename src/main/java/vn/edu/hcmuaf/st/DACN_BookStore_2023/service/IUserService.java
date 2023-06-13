@@ -16,9 +16,10 @@ public interface IUserService {
     //change information
     public void changeInformation(UserDTO user);
 
-    void processOAuthPostLogin(Object email);
+    //change password
+    public boolean checkPass(String email, String password);
+    public void changePassword(String password, String email);
 
-    void processOAuthPostLogin(String email);
 
     public List<UserDTO> findAllUser();
 
@@ -27,4 +28,6 @@ public interface IUserService {
     public void deleteByUserId(int id);
 
     public void save(UserDTO user);
+    public void processOAuthPostLogin(String email);
+
 }

@@ -2,9 +2,11 @@ package vn.edu.hcmuaf.st.DACN_BookStore_2023.controller.web;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.UserDTO;
+import vn.edu.hcmuaf.st.DACN_BookStore_2023.oauth2.CustomOAuth2User;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.IUserService;
 
 import java.security.Principal;
@@ -54,16 +56,21 @@ public class UserController {
         return mav;
     }
     @GetMapping("/getUser")
-    public UserDTO getUser(Principal principal) {
-        if (principal != null) {
-            UserDTO user = this.userService.findByEmailAndIsEnable(principal.getName());
-            user.setPassword("");
+    public UserDTO getUser(Authentication authentication) {
+        if (authentication != null) {
+            UserDTO user;
+            if (authentication.getPrincipal() instanceof CustomOAuth2User) {
+                CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
+                user = this.userService.findByEmailAndIsEnable(oauthUser.getAttribute("email"));
+            } else {
+                user = this.userService.findByEmailAndIsEnable(authentication.getName());
+                user.setPassword("");
+            }
             return user;
         } else {
             return new UserDTO();
         }
     }
-
     @GetMapping("/thong-tin-tai-khoan")
     public ModelAndView information() {
         ModelAndView mav = new ModelAndView("web/information.html");
@@ -71,12 +78,35 @@ public class UserController {
     }
 
     @PostMapping("/cap-nhat-thong-tin")
-    public ModelAndView changeInformation(@ModelAttribute(name = "user") UserDTO user, Principal principal) {
+    public ModelAndView changeInformation(@ModelAttribute(name = "user") UserDTO user, Authentication authentication) {
         ModelAndView mav = new ModelAndView("web/information.html");
         userService.changeInformation(user);
         mav.addObject("message", "Cập nhật thông tin thành công");
-        if (principal != null) return mav;
+        if (authentication != null) return mav;
         return new ModelAndView("web/signin.html");
     }
+    @GetMapping("/kiem-tra-mat-khau")
+    public boolean checkPass(@RequestParam(name = "oldPassword") String oldPass, Authentication authentication) {
+        String userEmail = "";
+        if (authentication.getPrincipal() instanceof CustomOAuth2User) {
+            CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+            userEmail = oAuth2User.getAttribute("email");
+        } else userEmail = authentication.getName();
+        return userService.checkPass(userEmail, oldPass);}
 
+    @PostMapping("/doi-mat-khau")
+    public ModelAndView changePassword(@RequestParam(name = "password") String newPass, Authentication authentication) {
+        ModelAndView mav = new ModelAndView("web/information.html");
+        String userEmail = "";
+        if (authentication.getPrincipal() instanceof CustomOAuth2User) {
+            CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+            userEmail = oAuth2User.getAttribute("email");
+        } else userEmail = authentication.getName();
+
+        userService.changePassword(newPass, userEmail);
+        mav.addObject("message", "Cập nhật mật khẩu thành công.");
+
+        if (authentication != null) return mav;
+        return new ModelAndView("web/signin.html");
+    }
 }
