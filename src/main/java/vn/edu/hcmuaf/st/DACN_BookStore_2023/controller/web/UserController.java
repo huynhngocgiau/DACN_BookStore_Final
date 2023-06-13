@@ -55,6 +55,19 @@ public class UserController {
         }
         return mav;
     }
+    @GetMapping("/quen-mat-khau")
+    public ModelAndView getForgetPassword() {
+        return new ModelAndView("web/forgetPassword.html");
+    }
+
+    @PostMapping("/gui-mail-quen-mat-khau")
+    public ModelAndView sendMailForgetPassword(@RequestParam(name = "mailForgot") String email) {
+        ModelAndView mav = new ModelAndView("web/forgetPassword.html");
+        UserDTO result = userService.sendMailForgotPassword(email);
+        if (result == null) mav.addObject("message", "Tài khoản không tồn tại.");
+        else mav.addObject("message", "Vui lòng kiểm tra email để nhận mật khẩu");
+        return mav;
+    }
     @GetMapping("/getUser")
     public UserDTO getUser(Authentication authentication) {
         if (authentication != null) {
