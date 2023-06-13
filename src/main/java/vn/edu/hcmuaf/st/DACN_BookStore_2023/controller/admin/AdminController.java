@@ -5,10 +5,10 @@ import vn.edu.hcmuaf.st.DACN_BookStore_2023.api.input.BookInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import vn.edu.hcmuaf.st.DACN_BookStore_2023.api.input.UserInput;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.*;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.oauth2.CustomOAuth2User;
-import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.IAuthorService;
-import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.IBookService;
+import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,9 +18,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.ICategoryService;
-import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.IUserService;
 
 @RestController
 @RequestMapping("/admin-page")
@@ -32,6 +29,8 @@ public class AdminController {
     private IUserService userService;
     @Autowired
     private IAuthorService authorService;
+    @Autowired
+    private IRoleService roleService;
 
     //books
     @GetMapping("/book-management")
@@ -44,8 +43,8 @@ public class AdminController {
     @GetMapping("/add-book-page")
     public ModelAndView addBookPage() {
         ModelAndView mav = new ModelAndView("admin/book-management/addBook");
-//        mav.addObject("categories", categoryService.findAll());
-//        mav.addObject("authors", authorService.findAll());
+        mav.addObject("categories", categoryService.findAll());
+        mav.addObject("authors", authorService.findAll());
         return mav;
     }
 
@@ -83,8 +82,8 @@ public class AdminController {
         newBook.setNews(input.isNews());
         newBook.setActive(true);
         newBook.setHot(input.isHot());
-//        newBook.setCategory(categoryService.findById(input.getCategoryId()));
-//        newBook.setAuthor(authorService.findById(input.getAuthorId()));
+        newBook.setCategory(categoryService.findById(input.getCategoryId()));
+        newBook.setAuthor(authorService.findById(input.getAuthorId()));
 
         //load hình
         if (!input.getImages().isEmpty()) {
@@ -111,8 +110,8 @@ public class AdminController {
             years.add(i);
         mav.addObject("years", years);
         mav.addObject("book", bookService.findById(id));
-//        mav.addObject("categories", categoryService.findAll());
-//        mav.addObject("authors", authorService.findAll());
+        mav.addObject("categories", categoryService.findAll());
+        mav.addObject("authors", authorService.findAll());
         return mav;
     }
 
@@ -200,6 +199,7 @@ public class AdminController {
             return userService.findByEmailAndIsEnable(userEmail);
         }
     }
+
     //admin author
     @GetMapping("/author-management")
     public ModelAndView listAuthor() {
@@ -238,6 +238,79 @@ public class AdminController {
     public ModelAndView deleteAuthor(@RequestParam("id") int id) {
         authorService.delete(id);
         ModelAndView mav = new ModelAndView("redirect:/admin-page/author-management");
+        return mav;
+    }
+
+    //account
+    @GetMapping("/account-management")
+    public ModelAndView listAccount() {
+        ModelAndView mav = new ModelAndView("admin/account-management/accounts");
+        mav.addObject("accounts", userService.findAllUser());
+        return mav;
+    }
+
+    @GetMapping("/detail-account")
+    public ModelAndView detailAccount(@RequestParam("id") int id) {
+        ModelAndView mav = new ModelAndView("admin/account-management/detail");
+        mav.addObject("account", userService.findByUserId(id));
+        return mav;
+    }
+
+    @GetMapping("/edit-account-page")
+    public ModelAndView editAccountPage(@RequestParam("id") int id) {
+        ModelAndView mav = new ModelAndView("admin/account-management/edit");
+        mav.addObject("account", userService.findByUserId(id));
+        return mav;
+    }
+
+    @PostMapping("/edit-account")
+    public ModelAndView editAccount(@ModelAttribute("user") UserInput user) {
+        ModelAndView mav = new ModelAndView("redirect:/admin-page/account-management");
+        UserDTO userDb = userService.findByUserId(user.getUserId());
+        //set lại tất cả thuộc tính của user để lưu lại trong db
+        //user input chỉ thay đổi 1 số thuộc tính, các thuộc tính còn lại thì lấy từ trong db ra
+        UserDTO newUser = new UserDTO();
+        newUser.setUserID(user.getUserId());
+        newUser.setUpdatedAt(user.getUpdatedAt());
+        newUser.setStatus(user.isStatus());
+        List<RoleDTO> roles = new ArrayList<>();
+        //lay role cu cua user
+        for (RoleDTO r : userDb.getRoles()) {
+            roles.add(roleService.findRolebyName(r.getName()));
+        }
+        if (user.getRoleName() != null)
+            roles.add(roleService.findRolebyName(user.getRoleName()));
+
+        newUser.setRoles(roles);
+        newUser.setUsername(userDb.getUsername());
+        newUser.setEmail(userDb.getEmail());
+        if (userDb.getFullname() != null) newUser.setFullname(userDb.getFullname());
+
+        newUser.setPassword(userDb.getPassword());
+
+        if (userDb.getBirthdate() != null)
+            newUser.setBirthdate(userDb.getBirthdate());
+
+        newUser.setConfirmToken(userDb.getConfirmToken());
+
+        if (userDb.getCreatedAt() != null)
+            newUser.setCreatedAt(userDb.getCreatedAt());
+
+        newUser.setGender(userDb.isGender());
+
+        newUser.setEnable(userDb.isEnable());
+
+        if (userDb.getPhone() != null)
+            newUser.setPhone(userDb.getPhone());
+
+        userService.save(newUser);
+        return mav;
+    }
+
+    @GetMapping("/delete-account")
+    public ModelAndView deleteAccount(@RequestParam("id") int id) {
+        ModelAndView mav = new ModelAndView("redirect:/admin-page/account-management");
+        userService.deleteByUserId(id);
         return mav;
     }
 }

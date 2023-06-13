@@ -2,6 +2,8 @@ package vn.edu.hcmuaf.st.DACN_BookStore_2023.service;
 
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.UserDTO;
 
+import java.util.List;
+
 public interface IUserService {
     public UserDTO findByEmailAndIsEnable(String email);
 
@@ -14,12 +16,18 @@ public interface IUserService {
     //change information
     public void changeInformation(UserDTO user);
 
-    void processOAuthPostLogin(Object email);
-
-    void processOAuthPostLogin(String email);
-    //change password
-    public void changePassword(String password, String email);
     //change password
     public boolean checkPass(String email, String password);
+    public void changePassword(String password, String email);
+
+
+    public List<UserDTO> findAllUser();
+
+    public UserDTO findByUserId(int id);
+
+    public void deleteByUserId(int id);
+
+    public void save(UserDTO user);
+    public void processOAuthPostLogin(String email);
 
 }
