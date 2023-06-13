@@ -30,6 +30,8 @@ public class AdminController {
     @Autowired
     private IAuthorService authorService;
     @Autowired
+    private IOrderService orderService;
+    @Autowired
     private IRoleService roleService;
 
     //books
@@ -311,6 +313,28 @@ public class AdminController {
     public ModelAndView deleteAccount(@RequestParam("id") int id) {
         ModelAndView mav = new ModelAndView("redirect:/admin-page/account-management");
         userService.deleteByUserId(id);
+        return mav;
+    }
+
+    //order
+    @GetMapping("/order-management")
+    public ModelAndView listOrder() {
+        ModelAndView mav = new ModelAndView("admin/order-management/orders");
+        mav.addObject("orders", orderService.findAll());
+        return mav;
+    }
+
+    @GetMapping("/detail-order")
+    public ModelAndView detailOrder(@RequestParam("id") int id) {
+        ModelAndView mav = new ModelAndView("admin/order-management/detail");
+        mav.addObject("order", orderService.findById(id));
+        return mav;
+    }
+
+    @GetMapping("/delete-order")
+    public ModelAndView deleteOrder(@RequestParam("id") int id) {
+        ModelAndView mav = new ModelAndView("redirect:/admin-page/order-management");
+        orderService.deleteById(id);
         return mav;
     }
 }
