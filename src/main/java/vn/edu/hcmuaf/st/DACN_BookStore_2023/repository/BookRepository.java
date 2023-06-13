@@ -20,11 +20,37 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 
     List<BookEntity> findAllByActiveAndTitleContains(boolean isActive, String title);
 
+    public List<BookEntity> findFirst8ByActiveAndHotOrderByIdDesc(boolean isActive, boolean isHot);
+
+    public List<BookEntity> findFirst8ByActiveAndNewsOrderByIdDesc(boolean isActive, boolean isNew);
+
+    public Page<BookEntity> findAllByActiveAndHot(boolean isActive, boolean isHot, Pageable pageable);
+
+    public Page<BookEntity> findAllByActiveAndNews(boolean isActive, boolean isNew, Pageable pageable);
+
+    public List<BookEntity> findFirst5ByCategoryCategoryIDAndQuantitySoldGreaterThan(int categoryid, int quantity);
+
+    public Page<BookEntity> findAllByPriceBetween(int from, int to, Pageable pageable);
+
+    public Page<BookEntity> findAllByPriceGreaterThan(int from, Pageable pageable);
+
+    Page<BookEntity> findAllByActiveAndDiscountPercentBetween(boolean active, double discountFrom, double discountTo, Pageable pageable);
+
 
     //đếm số sách theo danh mục
     public int countAllByCategoryCode(String code);
 
     public int countAllByAuthorAuthorCode(String code);
+
+    public int countAllByActiveAndHot(boolean isActive, boolean isHot);
+
+    public int countAllByActiveAndNews(boolean isActive, boolean isNew);
+
+    public int countAllByPriceBetween(int from, int to);
+
+    public int countAllByPriceGreaterThan(int from);
+
+    public int countAllByActiveAndDiscountPercentBetween(boolean active, double discountFrom, double discountTo);
 
     //đếm tất cả sách
     public int countAllByActive(boolean isActive);
