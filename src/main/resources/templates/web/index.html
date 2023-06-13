@@ -86,7 +86,7 @@
     </div>
     <div class="row mt-2 text-center">
         <div class="col">
-            <button class="btn btn-more"><a>Xem thêm</a></button>
+            <button class="btn btn-more"><a th:href="@{san-pham(hot=true)}">Xem thêm</a></button>
         </div>
     </div>
 </div>
@@ -103,7 +103,7 @@
     </div>
     <div class="row mt-2 text-center">
         <div class="col">
-            <button class="btn btn-more"><a>Xem thêm</a></button>
+            <button class="btn btn-more"><a th:href="@{san-pham(news=true)}">Xem thêm</a></button>
         </div>
     </div>
 </div>
@@ -151,6 +151,75 @@
 <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
 <!--script file-->
 <th:block th:insert="~{web/fragment::body/script}"></th:block>
+<script>
+    $(function () {
+        //load hot book
+        $.ajax({
+            url: "hot-book",
+            cache: false,
+            dataType: "json",
+            success: function (result) {
+                var str = "";
+                for (let item of result) {
+                    str += "<div class='col-lg-3 col-md-6 col-sm-12 pb-1'>";
+                    str += "<div class='card product-item border-0 mb-4'>";
+                    str += "<div style='height: 250px' class='card-header product-img position-relative overflow-hidden bg-transparent border p-0 d-flex justify-content-center'>";
+                    str += "<img class='img-fluid' src='" + item.images[0].path + "' alt='" + item.title + "' style='object-fit: contain'>";
+                    str += "</div>";
+                    str += "<div class='card-body border-left border-right text-center pt-4 pb-3'>";
+                    str += "<h6 class='text-truncate mb-3 text-danger' title='" + item.title + "'>" + item.title + "</h6>";
+                    str += "<div class='d-flex justify-content-center'>";
+                    str += "<h6 class='new-price'>" + item.discountPrice + "</h6>";
+                    str += "<span class='text-danger ml-2'>";
+                    str += item.discountPercent ? item.percentFormat : "";
+                    str += "</span>";
+                    str += "</div>";
+                    str += "</div>";
+                    str += "<div class='card-footer d-flex justify-content-between bg-light border'>";
+                    str += "<a href='chi-tiet?id=" + item.id + "' class='btn btn-sm text-dark p-0'><i class='fas fa-eye text-primary mr-1'></i>Chi tiết</a>";
+                    str += "<a onclick='addToCart(" + item.id + "," + 1 + ")' class='btn btn-sm text-dark p-0'><i class='fas fa-shopping-cart text-primary mr-1'></i>Giỏ hàng</a>";
+                    str += "</div>";
+                    str += "</div>";
+                    str += "</div>";
+                }
+                $("#hotArea").html(str);
+            }
+        });
+
+        //load new book
+        $.ajax({
+            url: "new-book",
+            cache: false,
+            dataType: "json",
+            success: function (result) {
+                var str = "";
+                for (let item of result) {
+                    str += "<div class='col-lg-3 col-md-6 col-sm-12 pb-1'>";
+                    str += "<div class='card product-item border-0 mb-4'>";
+                    str += "<div style='height: 250px' class='card-header product-img position-relative overflow-hidden bg-transparent border p-0 d-flex justify-content-center'>";
+                    str += "<img class='img-fluid' src='" + item.images[0].path + "' alt='" + item.title + "' style='object-fit: contain'>";
+                    str += "</div>";
+                    str += "<div class='card-body border-left border-right text-center pt-4 pb-3'>";
+                    str += "<h6 class='text-truncate mb-3 text-danger' title='" + item.title + "'>" + item.title + "</h6>";
+                    str += "<div class='d-flex justify-content-center'>";
+                    str += "<h6 class='new-price'>" + item.discountPrice + "</h6>";
+                    str += "<span class='text-danger ml-2'>";
+                    str += item.discount_percent ? item.percentFormat : "";
+                    str += "</span>";
+                    str += "</div>";
+                    str += "</div>";
+                    str += "<div class='card-footer d-flex justify-content-between bg-light border'>";
+                    str += "<a href='chi-tiet?id=" + item.id + "' class='btn btn-sm text-dark p-0'><i class='fas fa-eye text-primary mr-1'></i>Chi tiết</a>";
+                    str += "<a onclick='addToCart(" + item.id + "," + 1 + ")' class='btn btn-sm text-dark p-0'><i class='fas fa-shopping-cart text-primary mr-1'></i>Giỏ hàng</a>";
+                    str += "</div>";
+                    str += "</div>";
+                    str += "</div>";
+                }
+                $("#newArea").html(str);
+            }
+        });
+    })
+</script>
 </body>
 
 </html>
