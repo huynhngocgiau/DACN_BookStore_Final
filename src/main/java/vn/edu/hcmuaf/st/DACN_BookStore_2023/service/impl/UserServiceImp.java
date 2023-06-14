@@ -182,7 +182,7 @@ public class UserServiceImp implements IUserService {
     }
 
     @Override
-    public void processOAuthPostLogin(String email) {
+    public void processOAuthPostLogin(String email, String provider) {
         //nếu như tài khoản đã đăng ký và xác thực rồi thì không cần tạo lại
         UserEntity user = userRepo.findByEmailIgnoreCaseAndIsEnableAndStatus(email, true, true);
         //nếu như chưa có tài khoản thì tạo tk mới thêm vào db
@@ -193,7 +193,7 @@ public class UserServiceImp implements IUserService {
             oauthUser.setEnable(true);
             oauthUser.setCreatedAt(LocalDate.now());
             oauthUser.setStatus(true);
-            oauthUser.setProvider("GOOGLE");
+            oauthUser.setProvider(provider);
             List<RoleEntity> roles = new ArrayList<>();
             roles.add(roleRepo.findByName("ROLE_USER"));
             oauthUser.setRoles(roles);

@@ -271,6 +271,9 @@
             top: 50%;
             right: 50px;
         }
+        .icon-social i{
+            font-size: 28px;
+        }
 
     </style>
 </head>
@@ -302,7 +305,18 @@
             <a href="/" class="mb-2">Trang chủ</a>
             <button type="submit">Đăng nhập</button>
             <p class="hr-lines">Hoặc</p>
-            <a class="mt-2" th:href="@{/oauth2/authorization/google}">Đăng nhập bằng Google</a>
+            <div class="row icon-social">
+                <div class="col-6">
+                    <a class="mt-2" th:href="@{/oauth2/authorization/google}" title="Đăng nhập bằng Google">
+                        <i class="fab fa-google"></i>
+                    </a>
+                </div>
+                <div class="col-6">
+                    <a class="mt-2" th:href="@{/oauth2/authorization/facebook}" title="Đăng nhập bằng Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                </div>
+            </div>
         </form>
     </div>
     <div class="overlay-container">

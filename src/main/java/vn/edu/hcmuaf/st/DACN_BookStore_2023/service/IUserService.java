@@ -28,6 +28,7 @@ public interface IUserService {
     public void deleteByUserId(int id);
 
     public void save(UserDTO user);
-    public void processOAuthPostLogin(String email);
+  
+    public void processOAuthPostLogin(String email, String provider);
 
 }
