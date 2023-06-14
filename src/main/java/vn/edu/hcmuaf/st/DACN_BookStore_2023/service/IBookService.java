@@ -13,7 +13,6 @@ public interface IBookService {
     public List<BookDTO> findAll(Pageable pageable);
 
     public List<BookDTO> findAll();
-
     public List<BookDTO> findAllContainTitle(String title, Pageable pageable);
 
     public List<BookDTO> findHotBook(boolean isActive, boolean isHot);
@@ -58,4 +57,8 @@ public interface IBookService {
     public BookDTO findById(int id);
 
     public void deleteById(int id);
+    public List<String> autoCompleteTilte(String title);
+
+    public void updateQuantity(int quantity, int id);
+
 }

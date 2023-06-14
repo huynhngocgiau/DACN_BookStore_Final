@@ -22,15 +22,14 @@ import java.util.List;
 import java.util.Random;
 
 @Service
-//public class UserServiceImp implements IUserService {
-    public class UserServiceImp implements IUserService{
+public class UserServiceImp implements IUserService {
 
     @Autowired
     private UserConverter userConverter;
     @Autowired
     private UsersRepository userRepo;
-//    @Autowired
-//    private BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private RoleRepository roleRepo;
     @Autowired
@@ -59,7 +58,7 @@ import java.util.Random;
             if (temp != null) userRepo.delete(temp);
 
             //set lai pass da ma hoa
-            user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             //tao confirm token
             user.setConfirmToken(new Random().nextInt(999999) + "");
             user.setCreatedAt(LocalDate.now());
@@ -101,6 +100,30 @@ import java.util.Random;
         userRepo.save(userEntity);
         return userConverter.toDTO(userEntity);
     }
+
+    @Override
+    public UserDTO sendMailForgotPassword(String userEmail) {
+        //nếu lấy email của user, tra csdl có tồn tại tài khoản thì tạo một mật khẩu random 8 k tự gửi cho mail đó
+        UserEntity result = userRepo.findByEmailIgnoreCaseAndIsEnableAndStatus(userEmail, true, true);
+        if (result != null) {
+            //tao random pass
+            String rdPass = new Random().nextInt(99999999) + "";
+            while (rdPass.charAt(0) == 0 || rdPass.charAt(rdPass.length() - 1) == 0)
+                rdPass = new Random().nextInt(99999999) + "";
+            //send mail
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(userEmail);
+            message.setSubject("Bookstore - Xác nhận email quên mật khẩu");
+            message.setFrom("bookstore@gmail.com");
+            message.setText("Chúng tôi đã tạo mật khẩu mới cho tài khoản của bạn, mật khẩu là: " + rdPass + ". Để bảo mật tài khoản vui lòng đăng nhập và thay đổi mật khẩu");
+            mailSender.send(message);
+            //cập nhật lại mật khẩu random trong db
+            changePassword(rdPass, userEmail);
+            return userConverter.toDTO(result);
+        }
+        return null;
+    }
+
     @Override
     public void changeInformation(UserDTO user) {
         String username = "";
@@ -119,9 +142,43 @@ import java.util.Random;
         userRepo.updateUser(userFromDb.getUserID(), username, fullname, birthdate, gender, phone, LocalDate.now());
     }
 
-    @Override
-    public void processOAuthPostLogin(Object email) {
+   @Override
+    public boolean checkPass(String email, String password) {
+        String userPass = userRepo.findByEmailIgnoreCaseAndIsEnableAndStatus(email, true, true).getPassword();
+        //dùng passwordEndcoder để kiểm tra xem mk nhập vào có giống vs mk đã mã hóa của người dùng
+        return passwordEncoder.matches(password, userPass);
+    }
 
+    @Override
+    public void changePassword(String password, String email) {
+        UserEntity userFromDb = userRepo.findByEmailIgnoreCaseAndIsEnableAndStatus(email, true, true);
+        if (userFromDb != null) {
+            userRepo.updatePass(passwordEncoder.encode(password), userFromDb.getUserID());
+        }
+    }
+
+    @Override
+    public List<UserDTO> findAllUser() {
+        List<UserDTO> result = new ArrayList<>();
+        for (UserEntity u : userRepo.findAll()) {
+            result.add(userConverter.toDTO(u));
+        }
+        return result;
+    }
+
+    @Override
+    public UserDTO findByUserId(int id) {
+        return userConverter.toDTO(userRepo.findByUserID(id));
+    }
+
+    @Override
+    public void deleteByUserId(int id) {
+        userRepo.deleteByUserID(id);
+    }
+
+    @Override
+    public void save(UserDTO user) {
+        userRepo.save(userConverter.toEntity(user));
     }
 
     @Override
@@ -144,3 +201,5 @@ import java.util.Random;
         }
     }
 }
+
+   

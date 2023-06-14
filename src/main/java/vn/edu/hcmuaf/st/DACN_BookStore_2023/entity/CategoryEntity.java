@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "category")
@@ -23,4 +25,7 @@ public class CategoryEntity {
     private LocalDate createdAt;
     @Column(name = "updated_at")
     private LocalDate updatedAt;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
+    private List<BookEntity> books = new ArrayList<>();
 }

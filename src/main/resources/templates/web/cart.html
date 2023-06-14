@@ -38,7 +38,7 @@
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
         </div>
     </div>
-    <form method="post">
+    <form th:action="@{thanh-toan}" th:object="${order}" method="post">
         <div class="row px-xl-5">
             <div class="col-lg-8 table-responsive mb-5">
                 <table class="table table-bordered text-center mb-0">
@@ -89,6 +89,133 @@
 <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
 <!--script file-->
 <th:block th:insert="~{web/fragment::body/script}"></th:block>
+<script>
+    $.ajax({
+        url: "get-books",
+        cache: false,
+        dataType: "json",
+        success: function (result) {
+            showDetailCart(result);
+        }
+    });
+
+    function showDetailCart(result) {
+        str = "";
+        //result là cart output: total (tổng tiền cart đó) và ds cart item
+        //item ở đây là cart dto: cart item id, quantity, book, user, pt getTotalAmount
+        for (let item of result.booksList) {
+            str += "<tr>";
+            str += "<td><input type='checkbox' id='check" + item.book.id + "' name='carts' field='carts' value='" + item.cartID + "' checked onclick='checkedBook(" + item.book.id + ")'></td>";
+            str += "<td class='align-middle'><img src='img/product-1.jpg' alt='' style='width: 50px;'>";
+            str += "<a href='chi-tiet?id=" + item.book.id + "' style='font-size: smaller'>";
+            str += item.book.title;
+            str += "</a>";
+            str += "</td>";
+            str += "<td class='align-middle'>" + formatPrice(item.book.discount) + "</td>";
+            str += "<td class='align-middle'>";
+            str += "    <div class='input-group quantity mx-auto' style='width: 100px;'>";
+            str += "        <div class='input-group-btn'>";
+            str += "            <button type='button' onclick='subtract(" + item.book.id + ")' class='btn btn-sm btn-primary btn-minus'>";
+            str += "                <i class='fa fa-minus'></i>";
+            str += "            </button>";
+            str += "        </div>";
+            str += "        <input type='text' id='quantity" + item.book.id + "' class='form-control form-control-sm bg-secondary text-center' value='" + item.quantity + "'>";
+            str += "        <div class='input-group-btn'>";
+            str += "            <button type='button' onclick='plus(" + item.book.id + ")' class='btn btn-sm btn-primary btn-plus'>";
+            str += "                <i class='fa fa-plus'></i>";
+            str += "            </button>";
+            str += "        </div>";
+            str += "    </div>";
+            str += "</td>";
+            str += "<td class='align-middle'>";
+            str += "<span id='amount" + item.book.id + "'>" + formatPrice(item.totalAmount) + "</span>";
+            str += "<input type=hidden id='totalAmountInput" + item.book.id + "' value='" + item.totalAmount + "'>";
+            str += "</td>";
+            str += "<td class='align-middle'>";
+            str += "    <button type='button' onclick='deleteBook(" + item.book.id + ")' class='btn btn-sm btn-primary'><i class='fa fa-times'></i></button>";
+            str += "</td>";
+            str += "</tr>";
+        }
+        $("#showCartItem").html(str);
+        $("#subTotal").html(formatPrice(result.total));
+        //gan gia tri input ẩn để lát lấy value tính toán
+        $("#subTotalInput").val(result.total);
+    };
+
+    function checkedBook(id) {
+        //nếu nhấn vào checkbox thì nó sẽ lấy cái subtotal cộng hoặc trừ tổng tiền của cart item
+        // (lúc update quantity chỉ thay đổi tổng tiền cart item và subtotal, total chứ không thay đổi quantity)
+        var cartItemValue = Number($("#totalAmountInput" + id).val());
+        var getTotal = Number($("#subTotalInput").val());
+        if ($("#check" + id).is(':checked')) {
+            getTotal = getTotal + cartItemValue;
+        } else {
+            getTotal = getTotal - cartItemValue;
+        }
+        var sum = getTotal + 15000;
+        $("#subTotal").html(formatPrice(getTotal));
+        //hiển thị gt xong thì set lại gt cho input ẩn
+        $("#subTotalInput").val(getTotal);
+    }
+
+    function deleteBook(bookId) {
+        $.ajax({
+            url: "xoa-san-pham",
+            cache: false,
+            data:
+                {bookID: bookId},
+            dataType: "json",
+            success: function (result) {
+                showDetailCart(result);
+            }
+        })
+    };
+
+    function plus(bookId) {
+        var quantityValue = $("#quantity" + bookId);
+        var temp = Number(quantityValue.val());
+        quantityValue.val(temp + 1);
+        updateQuantity(bookId, quantityValue.val());
+    };
+
+    function subtract(bookId) {
+        var quantityValue = $("#quantity" + bookId);
+        var temp = Number(quantityValue.val())
+        var substract = temp - 1 <= 1 ? 1 : temp - 1;
+        quantityValue.val(substract);
+        updateQuantity(bookId, quantityValue.val());
+    };
+
+    function updateQuantity(bookId, newQuantity) {
+        $.ajax({
+            url: "update-quantity",
+            cache: false,
+            data: {
+                bookID: bookId,
+                quantity: newQuantity
+            },
+            dataType: "json",
+            success: function (result) {
+                //result là cart output
+                //item hien tai la cartDto
+                for (let item of result.booksList) {
+                    if (item.book.id == bookId) {
+                        $("#amount" + bookId).html(formatPrice(item.totalAmount));
+                        $("#totalAmountInput" + bookId).val(item.totalAmount);
+                        break;
+                    }
+                }
+                //change totalMoney
+                $("#subTotal").html(formatPrice(result.total));
+                $("#subTotalInput").val(result.total);
+                //khi tăng quantity thì check box của book tương ứng sẽ được check
+                //phòng trường hợp khi mình uncheck xong tăng quantity thì inputAmount và inputSubTotal nó sẽ tăng
+                //r mình check lại lần nữa thì nó sẽ lấy subTotal cộng amount một lần nữa
+                $("#check" + bookId).prop('checked', true);
+            }
+        })
+    };
+</script>
 </body>
 
 </html>

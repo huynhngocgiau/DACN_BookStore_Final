@@ -8,8 +8,10 @@ import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.BookDTO;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.BookImageDTO;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.entity.BookEntity;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.entity.BookImageEntity;
+import vn.edu.hcmuaf.st.DACN_BookStore_2023.repository.AuthorRepository;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.repository.BookImageRepository;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.repository.BookRepository;
+import vn.edu.hcmuaf.st.DACN_BookStore_2023.repository.CategoryRepository;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.IBookService;
 
 import java.util.ArrayList;
@@ -23,7 +25,10 @@ public class BookServiceImp implements IBookService {
     private BookConverter bookConverter;
     @Autowired
     private BookImageRepository bookImageRepository;
-
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private AuthorRepository authorRepository;
 
     @Override
     public List<BookDTO> findByCategoryCode(String categoryCode, Pageable pageable) {
@@ -62,7 +67,6 @@ public class BookServiceImp implements IBookService {
         }
         return results;
     }
-
 
     @Override
     public List<BookDTO> findAllContainTitle(String title, Pageable pageable) {
@@ -183,14 +187,12 @@ public class BookServiceImp implements IBookService {
     @Override
     public int countAllByPriceBetween(int from, int to) {
         return bookRepo.countAllByPriceBetween(from, to);
-
     }
 
     @Override
     public int countAllByPriceGreaterThan(int from) {
         return bookRepo.countAllByPriceGreaterThan(from);
     }
-
 
     @Override
     public List<String> autoCompleteTitle(String title) {
@@ -207,8 +209,8 @@ public class BookServiceImp implements IBookService {
         BookEntity bookEntity = new BookEntity();
         if (book.getId() != 0) {
             bookEntity = bookConverter.fromDtoToEntity(book, bookRepo.findById(book.getId()));
-//            bookEntity.setCategory(categoryRepository.findByCategoryID(book.getCategory().getCategoryID()));
-//            bookEntity.setAuthor(authorRepository.findByAuthorID(book.getAuthor().getAuthorID()));
+            bookEntity.setCategory(categoryRepository.findByCategoryID(book.getCategory().getCategoryID()));
+            bookEntity.setAuthor(authorRepository.findByAuthorID(book.getAuthor().getAuthorID()));
         } else
             bookEntity = bookConverter.toEntity(book);
         bookEntity = bookRepo.save(bookEntity);
@@ -229,6 +231,21 @@ public class BookServiceImp implements IBookService {
     @Override
     public void deleteById(int id) {
         bookRepo.deleteById(id);
+    }
+
+    @Override
+    public List<String> autoCompleteTilte(String title) {
+        List<BookEntity> books = bookRepo.findAllByActiveAndTitleContains(true, title);
+        List<String> result = new ArrayList<>();
+        for (BookEntity b : books) {
+            result.add(b.getTitle());
+        }
+        return result;
+    }
+
+    @Override
+    public void updateQuantity(int quantity, int id) {
+        bookRepo.updateQuantity(quantity, id);
     }
 
 }

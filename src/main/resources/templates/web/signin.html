@@ -295,19 +295,16 @@
         </form>
     </div>
     <div class="form-container sign-in-container">
-        <form th:action="@{/login}" method="post">
+        <form th:action="@{login}" method="post">
             <h1 class="form-title">Đăng nhập</h1>
-            <span class="text-danger"></span>
+            <span class="text-danger" th:utext="${message} ? ${message}"></span>
             <input type="email" name="email" placeholder="Email" required/>
-            <input type="password" name="password" placeholder="Mật khẩu"/>
+            <input type="password" name="password" onblur="checkPass()" placeholder="Mật khẩu"/>
             <div id="passLoginError" style="display: none"></div>
-            <a class="mt-2 mb-2">Quên mật khẩu?</a>
+            <a th:href="@{quen-mat-khau}" class="mt-2 mb-2">Quên mật khẩu?</a>
             <a href="/" class="mb-2">Trang chủ</a>
             <button type="submit">Đăng nhập</button>
             <p class="hr-lines">Hoặc</p>
-<<<<<<< Updated upstream
-            <a th:href="@{/oauth2/authorization/google}" class="mt-2">Đăng nhập bằng Google</a>
-=======
             <div class="row icon-social">
                 <div class="col-6">
                     <a class="mt-2" th:href="@{/oauth2/authorization/google}" title="Đăng nhập bằng Google">
@@ -320,7 +317,6 @@
                     </a>
                 </div>
             </div>
->>>>>>> Stashed changes
         </form>
     </div>
     <div class="overlay-container">

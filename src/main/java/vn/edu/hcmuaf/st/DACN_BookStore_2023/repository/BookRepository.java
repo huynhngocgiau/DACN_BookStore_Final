@@ -1,8 +1,12 @@
 package vn.edu.hcmuaf.st.DACN_BookStore_2023.repository;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.entity.BookEntity;
 
 import java.util.List;
@@ -36,7 +40,6 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 
     Page<BookEntity> findAllByActiveAndDiscountPercentBetween(boolean active, double discountFrom, double discountTo, Pageable pageable);
 
-
     //đếm số sách theo danh mục
     public int countAllByCategoryCode(String code);
 
@@ -61,4 +64,15 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 
     public BookEntity findFirstByOrderByIdDesc();
 
+    @Transactional
+    @Modifying
+    public void deleteById(int id);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update book set quantity_sold=:quantity where id=:id", nativeQuery = true)
+    public void updateQuantity(@Param("quantity") int quantity,
+                               @Param("id") int id);
+
 }
+
