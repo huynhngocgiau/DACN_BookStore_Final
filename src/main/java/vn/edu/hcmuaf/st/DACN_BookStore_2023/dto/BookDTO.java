@@ -29,6 +29,7 @@ public class BookDTO {
     private CategoryDTO category;
     private AuthorDTO author;
     private List<BookImageDTO> images = new ArrayList<>();
+    private List<OrderlineDTO> orderlines = new ArrayList<>();
 
     //getter & setter
     public int getId() {
