@@ -62,8 +62,10 @@ public class WebSecurityConfig {
                                     @Override
                                     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                                         CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
+                                        //provider can be Google or Facebook
+                                        String provider= oauthUser.getClientName();
                                         //kiểm tra xem database đã có tài khoản gg này chưa, nếu chưa thì lưu vào db
-                                        userService.processOAuthPostLogin(oauthUser.getAttribute("email"));
+                                        userService.processOAuthPostLogin(oauthUser.getAttribute("email"), provider);
                                         response.sendRedirect("/");
                                     }
                                 }));
