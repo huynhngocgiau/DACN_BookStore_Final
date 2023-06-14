@@ -132,4 +132,12 @@ public class BookServiceImp implements IBookService {
         bookRepo.deleteById(id);
     }
 
+    @Override
+    public List<BookDTO> findByCategoryIdAnQuantityGreaterThan(int categoryId, int quantity) {
+        List<BookDTO> results = new ArrayList<>();
+        for (BookEntity b : bookRepo.findFirst5ByCategoryCategoryIDAndQuantitySoldGreaterThan(categoryId, quantity)) {
+            results.add(bookConverter.toDTO(b));
+        }
+        return results;
+    }
 }

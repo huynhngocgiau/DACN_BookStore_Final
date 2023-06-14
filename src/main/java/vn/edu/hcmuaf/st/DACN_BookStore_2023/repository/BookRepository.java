@@ -35,4 +35,5 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 
     public BookEntity findFirstByOrderByIdDesc();
 
+    public List<BookEntity> findFirst5ByCategoryCategoryIDAndQuantitySoldGreaterThan(int categoryid, int quantity);
 }

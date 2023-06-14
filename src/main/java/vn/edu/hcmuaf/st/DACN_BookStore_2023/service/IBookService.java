@@ -32,4 +32,7 @@ public interface IBookService {
     public BookDTO findById(int id);
 
     public void deleteById(int id);
+
+    public List<BookDTO> findByCategoryIdAnQuantityGreaterThan(int categoryId, int quantity);
+
 }

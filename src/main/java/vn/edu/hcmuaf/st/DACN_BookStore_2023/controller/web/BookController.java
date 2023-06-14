@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.BookDTO;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.form.BookOutput;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.service.IBookService;
 
@@ -65,5 +66,18 @@ public class BookController {
     @GetMapping("/autocomplete")
     public List<String> autoCompleteTitle(@RequestParam("title") String title) {
         return bookService.autoCompleteTitle(title);
+    }
+    // chi tiết sản phẩm
+    @GetMapping("/chi-tiet")
+    public ModelAndView detail(@RequestParam(name = "id") Integer id) {
+        ModelAndView mav = new ModelAndView("web/detail.html");
+        BookDTO bookDb = bookService.findById(id);
+        mav.addObject("list", bookService.findByCategoryIdAnQuantityGreaterThan(bookDb.getCategory().getCategoryID(), 50));
+        return mav;
+    }
+
+    @GetMapping("/getDetailBook")
+    public BookDTO getDetail(@RequestParam(name = "id") int id) {
+        return bookService.findById(id);
     }
 }
