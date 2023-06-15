@@ -26,7 +26,7 @@ public class AuthorEntity {
     private LocalDate createdAt;
     @Column(name = "updated_at")
     private LocalDate updatedAt;
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
     private List<BookEntity> books = new ArrayList<>();
 
 }

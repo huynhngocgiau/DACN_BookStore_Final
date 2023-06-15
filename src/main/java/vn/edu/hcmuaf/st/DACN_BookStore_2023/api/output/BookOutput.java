@@ -1,4 +1,4 @@
-package vn.edu.hcmuaf.st.DACN_BookStore_2023.form;
+package vn.edu.hcmuaf.st.DACN_BookStore_2023.api.output;
 
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.dto.BookDTO;
 
@@ -34,3 +34,4 @@ public class BookOutput {
         this.result = result;
     }
 }
+
