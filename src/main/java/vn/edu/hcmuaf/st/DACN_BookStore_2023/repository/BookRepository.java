@@ -73,6 +73,5 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
     @Query(value = "update book set quantity_sold=:quantity where id=:id", nativeQuery = true)
     public void updateQuantity(@Param("quantity") int quantity,
                                @Param("id") int id);
-
 }
 

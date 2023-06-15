@@ -57,7 +57,6 @@ public interface IBookService {
     public BookDTO findById(int id);
 
     public void deleteById(int id);
-    public List<String> autoCompleteTilte(String title);
 
     public void updateQuantity(int quantity, int id);
 
