@@ -34,7 +34,7 @@ public class CustomOAuth2User implements OAuth2User {
     //tra ve username cua nguoi da dang nhap
     @Override
     public String getName() {
-        return oAuth2User.getName();
+        return oAuth2User.getAttribute("name");
     }
 
     public String getClientName() {

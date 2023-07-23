@@ -12,12 +12,15 @@ public interface IUserService {
     public String getConfirmCode(int id);
 
     public UserDTO confirmEmail(int id);
+
     public UserDTO sendMailForgotPassword(String userEmail);
+
     //change information
     public void changeInformation(UserDTO user);
 
     //change password
     public boolean checkPass(String email, String password);
+
     public void changePassword(String password, String email);
 
 
@@ -28,7 +31,7 @@ public interface IUserService {
     public void deleteByUserId(int id);
 
     public void save(UserDTO user);
-  
-    public void processOAuthPostLogin(String email, String provider);
+
+    public void processOAuthPostLogin(String email, String username, String provider);
 
 }

@@ -63,16 +63,16 @@ public class WebSecurityConfig {
                                     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                                         CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
                                         //provider can be Google or Facebook
-                                        String provider= oauthUser.getClientName();
+                                        String provider = oauthUser.getClientName();
                                         //kiểm tra xem database đã có tài khoản gg này chưa, nếu chưa thì lưu vào db
-                                        userService.processOAuthPostLogin(oauthUser.getAttribute("email"), provider);
+                                        userService.processOAuthPostLogin(oauthUser.getAttribute("email"), oauthUser.getName(), provider);
                                         response.sendRedirect("/");
                                     }
                                 }));
         http.authenticationProvider(authProvider());
         return http.build();
     }
-    
+
     //thiết lập userDetailService với encoder
     @Bean
     public DaoAuthenticationProvider authProvider() {
