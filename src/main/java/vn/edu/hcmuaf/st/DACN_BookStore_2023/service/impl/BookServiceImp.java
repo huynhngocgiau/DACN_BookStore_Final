@@ -234,18 +234,7 @@ public class BookServiceImp implements IBookService {
     }
 
     @Override
-    public List<String> autoCompleteTilte(String title) {
-        List<BookEntity> books = bookRepo.findAllByActiveAndTitleContains(true, title);
-        List<String> result = new ArrayList<>();
-        for (BookEntity b : books) {
-            result.add(b.getTitle());
-        }
-        return result;
-    }
-
-    @Override
     public void updateQuantity(int quantity, int id) {
         bookRepo.updateQuantity(quantity, id);
     }
-
 }

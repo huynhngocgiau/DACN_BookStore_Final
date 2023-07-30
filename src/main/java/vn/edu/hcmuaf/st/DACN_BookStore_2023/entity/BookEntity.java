@@ -52,6 +52,9 @@ public class BookEntity {
             cascade = CascadeType.REMOVE)
     List<BookImageEntity> images = new ArrayList<>();
 
+    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE)
+    private List<OrderLineEntity> orderlines = new ArrayList<>();
+
     //getter & setter
     public int getId() {
         return id;

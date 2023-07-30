@@ -331,6 +331,20 @@ public class AdminController {
         return mav;
     }
 
+    @GetMapping("/edit-order-page")
+    public ModelAndView editOrderPage(@RequestParam("id") int id) {
+        ModelAndView mav = new ModelAndView("admin/order-management/editOrder");
+        mav.addObject("order", orderService.findById(id));
+        return mav;
+    }
+
+    @PostMapping("/edit-order")
+    public ModelAndView editOrder(@ModelAttribute("orderInput") OrderDTO order) {
+        orderService.update(order, order.getOrderID());
+        ModelAndView mav = new ModelAndView("redirect:/admin-page/order-management");
+        return mav;
+    }
+
     @GetMapping("/delete-order")
     public ModelAndView deleteOrder(@RequestParam("id") int id) {
         ModelAndView mav = new ModelAndView("redirect:/admin-page/order-management");

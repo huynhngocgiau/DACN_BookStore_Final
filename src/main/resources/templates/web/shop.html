@@ -86,9 +86,10 @@
             <div class="row pb-3">
                 <div class="col-12 pb-1">
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                        <form th:action="@{/danh-sach-san-pham}">
+                        <form action="/danh-sach-san-pham">
                             <div class="input-group">
-                                <input type="text" class="form-control" id="search" placeholder="Tìm kiếm theo tên" onkeyup="searchTitle()">
+                                <input type="text" class="form-control" id="search" placeholder="Tìm kiếm theo tên"
+                                       onkeyup="searchTitle()">
                                 <div class="input-group-append">
                                         <span class="input-group-text bg-transparent text-primary">
                                             <i class="fa fa-search"></i>
@@ -136,7 +137,6 @@
 <!--script file-->
 <th:block th:insert="~{web/fragment::body/script}"></th:block>
 <script>
-
     $(function () {
         $.ajax({
             url: "getAllCat",

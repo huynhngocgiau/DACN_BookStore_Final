@@ -31,8 +31,7 @@ public class OrderEntity {
     @ManyToOne
     @JoinColumn(name = "userID")
     private UserEntity user;
-
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE)
     private List<OrderLineEntity> orderlines = new ArrayList<>();
 
     public int getOrderID() {
