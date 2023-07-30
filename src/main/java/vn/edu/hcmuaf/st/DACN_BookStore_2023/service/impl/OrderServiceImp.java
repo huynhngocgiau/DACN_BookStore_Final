@@ -20,8 +20,8 @@ public class OrderServiceImp implements IOrderService {
     private OrderConverter orderConverter;
 
     @Override
-    public OrderDTO save(OrderDTO order) {
-        return orderConverter.toDTO(orderRepository.save(orderConverter.toEntity(order)));
+    public void save(OrderDTO order) {
+      orderRepository.save(orderConverter.toEntity(order));
     }
 
     @Override
@@ -57,6 +57,11 @@ public class OrderServiceImp implements IOrderService {
     @Override
     public void deleteById(int id) {
         orderRepository.deleteByOrderID(id);
+    }
+
+    @Override
+    public OrderDTO findLastSave() {
+        return orderConverter.toDTO(orderRepository.findFirstByOrderByOrderIDDesc());
     }
 }
 

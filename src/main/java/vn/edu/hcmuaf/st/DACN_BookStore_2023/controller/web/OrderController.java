@@ -112,11 +112,11 @@ public class OrderController {
         newOrder.setUser(userService.findByEmailAndIsEnable(userEmail));
         newOrder.setStatus("Đang xử lý..");
         newOrder.setTotalPrice(total + 15000);
-        OrderDTO result = orderService.save(newOrder);
+        orderService.save(newOrder);
 
         //chạy list orderline de set lai orderid
         for (OrderlineDTO l : orderLineList) {
-            l.setOrder(result);
+            l.setOrder(orderService.findLastSave());
             orderlineService.save(l);
         }
         mav.addObject("message", "Đặt hàng thành công. Vui lòng truy cập trang đơn hàng để theo dõi.");

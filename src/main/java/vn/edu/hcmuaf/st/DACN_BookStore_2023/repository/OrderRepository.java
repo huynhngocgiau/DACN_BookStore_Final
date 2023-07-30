@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import vn.edu.hcmuaf.st.DACN_BookStore_2023.entity.BookEntity;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.entity.OrderEntity;
 
 import java.time.LocalDate;
@@ -29,5 +30,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
     @Transactional
     @Modifying
     public void deleteByOrderID(int id);
+
+    public OrderEntity findFirstByOrderByOrderIDDesc();
 
 }
