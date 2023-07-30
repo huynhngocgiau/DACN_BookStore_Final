@@ -106,4 +106,20 @@ public class OrderEntity {
     public void setOrderlines(List<OrderLineEntity> orderlines) {
         this.orderlines = orderlines;
     }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

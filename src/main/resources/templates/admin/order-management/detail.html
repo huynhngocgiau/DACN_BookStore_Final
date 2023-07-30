@@ -33,15 +33,20 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label">Họ và tên</label>
                         <div class="col-md-4 inputGroupContainer">
+<<<<<<< Updated upstream
                             <input disabled id="description" name="description"
                                       class="form-control" th:value="${order.name}">
+=======
+                            <input disabled id="name" name="name"
+                                   class="form-control" th:value="${order.name}">
+>>>>>>> Stashed changes
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-4 control-label">Số điện thoại</label>
                         <div class="col-md-4 inputGroupContainer">
                             <input disabled
-                                   class="form-control" th:value="${order.phone}"
+                                   class="form-control" id="phone" name="phone" th:value="${order.phone}"
                                    type="text">
                         </div>
                     </div>
@@ -49,7 +54,7 @@
                         <label class="col-md-4 control-label">Địa chỉ</label>
                         <div class="col-md-4 inputGroupContainer">
                             <input disabled
-                                   class="form-control" th:value="${order.address}"
+                                   class="form-control" id="address" name="address" th:value="${order.address}"
                                    type="text">
                         </div>
                     </div>
@@ -57,7 +62,7 @@
                         <label class="col-md-4 control-label">Ghi chú</label>
                         <div class="col-md-4 inputGroupContainer">
                             <input disabled
-                                   class="form-control" th:value="${order.note}"
+                                   class="form-control" name="note" th:value="${order.note}"
                                    type="text">
                         </div>
                     </div>

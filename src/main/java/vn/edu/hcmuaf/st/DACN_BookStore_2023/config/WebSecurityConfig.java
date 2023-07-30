@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import vn.edu.hcmuaf.st.DACN_BookStore_2023.oauth2.CustomOAuth2User;
@@ -28,7 +29,7 @@ public class WebSecurityConfig {
     private IUserService userService;
 
     @Autowired
-    private PasswordEncoderConfig passwordEncoderConfig;
+    private BCryptPasswordEncoder passwordEncoderConfig;
 
 
     @Bean
@@ -78,7 +79,7 @@ public class WebSecurityConfig {
     public DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoderConfig.encoder());
+        authProvider.setPasswordEncoder(passwordEncoderConfig);
         return authProvider;
     }
 }
